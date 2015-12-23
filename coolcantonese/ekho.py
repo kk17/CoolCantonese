@@ -113,7 +113,7 @@ class Ekho(object):
                 bytes_data = f.read()
 
             bottle.response.set_header('Content-type', _MIME_TYPE[file_type])
-            # os.remove(filepath)
+            os.remove(filepath)
             return bytes_data
 
         @app.get('/<voice>/symbols/<text_with_ext:re:.+\.(wav|mp3|ogg)>')
@@ -126,7 +126,7 @@ class Ekho(object):
                 bytes_data = f.read()
 
             bottle.response.set_header('Content-type', _MIME_TYPE[file_type])
-            # os.remove(filepath)
+            os.remove(filepath)
             return bytes_data
 
         @app.get('/<voice>/symbols/<text>')
