@@ -60,10 +60,10 @@ class Ekho(object):
         return "%s/%s/text/%s.%s" % (
             self.url_prefix, voice, encoded_text, file_type)
 
-    def get_pronounces_audio_url(
+    def get_symbols_audio_url(
             self, pronounces, voice="Cantonese", file_type="mp3"):
         text = "_".join(pronounces)
-        return "%s/%s/phonetic/%s.%s" % (
+        return "%s/%s/symbols/%s.%s" % (
             self.url_prefix, voice, text, file_type)
 
     def export_text_audio(
@@ -80,14 +80,14 @@ class Ekho(object):
         logger.info("ret %s", ret)
         return filepath
 
-    def export_pronounces_audio(
+    def export_symbols_audio(
             self, pronounces, voice="Cantonese",
             file_type="mp3", filepath=None):
         text = "[[%s]]" % " ".join(pronounces)
         return self.export_text_audio(text, voice, file_type, filepath)
 
-    def get_phonetic(self, voice, text):
-        logger.info("get_phonetic: voice=%s,text=%s", voice, text)
+    def get_symbols(self, voice, text):
+        logger.info("get_symbols: voice=%s,text=%s", voice, text)
         return ekho("-v", voice, "-l", text)
 
     def get_temp_file_name(self, file_type):
@@ -118,11 +118,11 @@ class Ekho(object):
             # os.remove(filepath)
             return bytes_data
 
-        @app.get('/<voice>/phonetic/<text_with_ext:re:.+\.(wav|mp3|ogg)>')
-        def get_phonetic_audio(voice, text_with_ext):
+        @app.get('/<voice>/symbols/<text_with_ext:re:.+\.(wav|mp3|ogg)>')
+        def get_symbols_audio(voice, text_with_ext):
             text_with_ext = to_text_type(text_with_ext)
             text, file_type = get_text_and_type(text_with_ext)
-            filepath = self.export_pronounces_audio(
+            filepath = self.export_symbols_audio(
                 text.split("_"), voice, file_type)
             with open(filepath, "rb") as f:
                 bytes_data = f.read()
@@ -131,10 +131,10 @@ class Ekho(object):
             # os.remove(filepath)
             return bytes_data
 
-        @app.get('/<voice>/phonetic/<text>')
-        def get_phonetic(voice, text):
+        @app.get('/<voice>/symbols/<text>')
+        def get_symbols(voice, text):
             text = to_text_type(text)
-            return self.get_phonetic(voice, text)
+            return self.get_symbols(voice, text)
 
         @app.error(404)
         def error404(error):

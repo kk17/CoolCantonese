@@ -78,7 +78,7 @@ def get_mediaid(pronounce_list):
     if mediaid:
         return mediaid
     try:
-        audio_filename = ekho.export_pronounces_audio(pronounce_list)
+        audio_filename = ekho.export_symbols_audio(pronounce_list)
         if audio_filename:
             resp = client.upload_media("voice", open(audio_filename, "rb"))
             os.remove(audio_filename)
@@ -164,7 +164,7 @@ def get_chars(txtMsg):
     r = notation_marker.get_chars(content)
     if r:
         try:
-            url = ekho.get_pronounces_audio_url([content])
+            url = ekho.get_symbols_audio_url([content])
             return [content, r.pretty(), url]
         except Exception:
             logger.exception("get_chars error")
@@ -268,7 +268,7 @@ def get_last_msg_audio(userid):
             prons = []
             for p in r.noted_chars:
                 prons.append(p.symbols)
-            url = ekho.get_pronounces_audio_url(prons)
+            url = ekho.get_symbols_audio_url(prons)
             return [content, ",".join(prons), url]
         elif content.startswith("@"):
             content = content[1:]

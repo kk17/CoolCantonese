@@ -28,22 +28,22 @@ def app(tmpdir):
     return App(Ekho(tmpdir.strpath).wsgi)
 
 
-def test_export_pronounces_audio_ok(app):
+def test_get_text_audio_ok(app):
     url = pathname2url(u"/Cantonese/text/你好.mp3")
     result = app.get(url)
     assert result.status_int == 200
     assert result.headers['Content-Type'] == 'audio/mpeg'
 
 
-def test_get_phonetic_audio_ok(app):
-    url = pathname2url(u"/Cantonese/phonetic/nei5_hou2.wav")
+def test_get_symbols_audio_ok(app):
+    url = pathname2url(u"/Cantonese/symbols/nei5_hou2.wav")
     result = app.get(url)
     assert result.status_int == 200
     assert result.headers['Content-Type'] == 'audio/wav'
 
 
-def test_get_phonetic_text_ok(app):
-    url = pathname2url(u"/Cantonese/phonetic/你好")
+def test_get_symbols_ok(app):
+    url = pathname2url(u"/Cantonese/symbols/你好")
     result = app.get(url)
     assert result.status_int == 200
     assert "nei5 hou2" in result.text
