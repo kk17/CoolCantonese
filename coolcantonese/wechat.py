@@ -66,9 +66,9 @@ def get_cache_translation(content):
     return result
 
 
-def get_mediaid(pronounce_list):
+def get_mediaid(noted_chars):
     key = ""
-    for p in pronounce_list:
+    for p in noted_chars:
         if p:
             key += p
     if "" == key:
@@ -78,7 +78,7 @@ def get_mediaid(pronounce_list):
     if mediaid:
         return mediaid
     try:
-        audio_filename = ekho.export_symbols_audio(pronounce_list)
+        audio_filename = ekho.export_symbols_audio(noted_chars)
         if audio_filename:
             resp = client.upload_media("voice", open(audio_filename, "rb"))
             os.remove(audio_filename)
@@ -222,8 +222,8 @@ def get_noted_chars(userid, content):
         if cache_user_msg(userid, "@"+content):
             result = TranslateResult()
             result.words = r.in_str
-            result.pronounce_list = r.noted_chars
-            result.has_pronounce = True
+            result.noted_chars = r.noted_chars
+            result.has_symbols = True
             cache_notations(userid, result)
             return r.pretty() + u"\n--回复#获得语音--"
         else:
@@ -283,7 +283,7 @@ def get_last_msg_audio(userid):
 
 
 def get_music_msg(result):
-    if result.has_pronounce:
+    if result.has_symbols:
         logger.debug("result.words: %s", result.words)
         url = ekho.get_text_audio_url(result.words)
         return [result.words, result.get_words_with_pronounces(), url]
@@ -354,7 +354,7 @@ def translate(userid, content, in_chat_mode=False, user_content=None):
         logger.info("get translation:%s" % result.words)
         if client:
             client.send_text_message(userid, result.words)
-            mediaid = get_mediaid(result.pronounce_list)
+            mediaid = get_mediaid(result.noted_chars)
             if mediaid:
                 client.send_voice_message(userid, mediaid)
             return result.pretty()

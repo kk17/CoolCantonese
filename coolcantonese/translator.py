@@ -23,10 +23,10 @@ class TranslateResult(object):
         self.pronounce_list = pronounce_list
         if self.pronounce_list is None:
             self.pronounce_list = []
-        self.has_pronounce = False
+        self.has_symbols = False
 
     def pretty(self):
-        if not self.has_pronounce:
+        if not self.has_symbols:
             return self.words
         return self.words + "\n\n" + self.get_words_with_pronounces()
 
@@ -46,7 +46,7 @@ class TranslateResult(object):
         self.words += word
         self.pronounce_list.append(pronounce)
         if pronounce:
-            self.has_pronounce = True
+            self.has_symbols = True
 
     def get_filename(self, ext=".mp3"):
         filename = ""
@@ -158,7 +158,7 @@ class BaiduTranslator(Translator):
         result = TranslateResult()
         result.words = r.in_str
         result.pronounce_list = r.noted_chars
-        result.has_pronounce = True
+        result.has_symbols = True
         return result
 
 # 字段名 类型  必填参数    描述  备注
