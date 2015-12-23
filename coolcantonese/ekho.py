@@ -12,8 +12,6 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-
-from sh import touch
 try:
     from sh import ekho
 except Exception:
@@ -22,7 +20,7 @@ except Exception:
             return "nei5 hou2"
         elif "-o" in args:
             filepath = args[5]
-            touch(filepath)
+            open(filepath, "a").close()
         else:
             raise
 
