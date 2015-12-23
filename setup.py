@@ -44,17 +44,12 @@ class Tox(TestCommand):
 
 install_requires = """
 werobot>=0.6.0
-pydub>=0.9.5
-phonetic>=0.0.3
 beautifulsoup4>=4.3.2
-lxml
+lxml>=3.3.3
 redis>=2.10.3
 sh>=1.0.8
-qiniu>=7.0.3
-six
-requrests
-anyconfig
-PyYAML
+six>=1.10.0
+requests>=2.8.1
 """
 
 setup(

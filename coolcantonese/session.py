@@ -8,9 +8,9 @@ except ImportError:
 import pickle
 import logging
 from redis import StrictRedis
-from werobot.session import SessionStorage as SessionStorage
-# from wechat.session.redisstorage import RedisStorage
-from werobot.session.filestorage import FileStorage
+from werobot.session import SessionStorage
+from coolcantonese.util import to_string_type
+
 
 logger = logging.getLogger(__name__)
 
@@ -52,6 +52,7 @@ class FileSession(Session):
         self.db = dbm.open(filepath, "c")
 
     def get(self, key):
+        key = to_string_type(key)
         try:
             session_json = self.db[key]
         except KeyError:
@@ -59,15 +60,18 @@ class FileSession(Session):
         return pickle.loads(session_json)
 
     def set(self, key, value):
+        key = to_string_type(key)
         self.db[key] = pickle.dumps(value)
 
     def delete(self, key):
+        key = to_string_type(key)
         del self.db[key]
 
     def expire(self, key, expire_seconds):
         pass
 
     def exists(self, key):
+        key = to_string_type(key)
         # logger.debug("db.keys:%s", self.db.keys())
         return key in self.db
 

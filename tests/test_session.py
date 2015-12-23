@@ -23,7 +23,7 @@ def file_session(tmpdir):
 
 
 def test_file_session(file_session):
-    key = "kk"
+    key = u"舞鬼十七"
     value = 17
     print(file_session.get(key))
     assert not file_session.exists(key)
@@ -53,7 +53,7 @@ def test_file_session(file_session):
 
 
 # def test_redis_session(redis_session):
-#     key = "kk"
+#     key = u"舞鬼十七"
 #     value = 17
 #     print(redis_session.get(key))
 #     assert not redis_session.exists(key)

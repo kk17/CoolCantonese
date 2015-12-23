@@ -13,3 +13,6 @@ examples/output/
 .tox/
 *$py.class
 .coverage
+coolcantonese/conf/config.json
+coolcantonese/conf/config.yml
+tests/simulator.py

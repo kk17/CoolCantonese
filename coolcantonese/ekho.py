@@ -2,7 +2,11 @@
 import os
 import os.path
 from datetime import datetime
-from six.moves import urllib
+from coolcantonese.util import (
+    pathname2url,
+    to_string_type,
+    to_text_type
+)
 
 import logging
 
@@ -52,7 +56,7 @@ class Ekho(object):
         self._wsgi = None
 
     def get_text_audio_url(self, text, voice="Cantonese", file_type="mp3"):
-        encoded_text = urllib.request.pathname2url(text)
+        encoded_text = pathname2url(text)
         return "%s/%s/text/%s.%s" % (
             self.url_prefix, voice, encoded_text, file_type)
 
@@ -68,10 +72,12 @@ class Ekho(object):
             temp_name = self.get_temp_file_name(file_type)
             filepath = os.path.join(self.audio_folder, temp_name)
         logger.info(
-            "export_text_audio: voice={},text={},file_type={}"
-            .format(voice, text, filepath, file_type))
-        ekho(
+            "export_text_audio: voice=%s, text=%s, filepath=%s, file_type=%s",
+            voice, text, filepath, file_type)
+        text = to_string_type(text)
+        ret = ekho(
             "-v", voice, "-t", file_type, "-o", filepath, text)
+        logger.info("ret %s", ret)
         return filepath
 
     def export_pronounces_audio(
@@ -81,12 +87,12 @@ class Ekho(object):
         return self.export_text_audio(text, voice, file_type, filepath)
 
     def get_phonetic(self, voice, text):
-        logger.info("get_phonetic: voice={},text={}".format(voice, text))
+        logger.info("get_phonetic: voice=%s,text=%s", voice, text)
         return ekho("-v", voice, "-l", text)
 
     def get_temp_file_name(self, file_type):
-        return "{}.{}".format(
-            datetime.now().strftime("%y-%m-%d_%H_%M_%S_%f"), file_type)
+        date_str = datetime.now().strftime("%y-%m-%d_%H_%M_%S_%f")
+        return "%s.%s" % (date_str, file_type)
 
     @property
     def wsgi(self):
@@ -101,6 +107,7 @@ class Ekho(object):
 
         @app.get('/<voice>/text/<text_with_ext:re:.+\.(wav|mp3|ogg)>')
         def get_text_audio(voice, text_with_ext):
+            text_with_ext = to_text_type(text_with_ext)
             text, file_type = get_text_and_type(text_with_ext)
             filepath = self.export_text_audio(text, voice, file_type)
             # return bottle.static_file(temp_name, root=self.audio_folder)
@@ -108,11 +115,12 @@ class Ekho(object):
                 bytes_data = f.read()
 
             bottle.response.set_header('Content-type', _MIME_TYPE[file_type])
-            os.remove(filepath)
+            # os.remove(filepath)
             return bytes_data
 
         @app.get('/<voice>/phonetic/<text_with_ext:re:.+\.(wav|mp3|ogg)>')
         def get_phonetic_audio(voice, text_with_ext):
+            text_with_ext = to_text_type(text_with_ext)
             text, file_type = get_text_and_type(text_with_ext)
             filepath = self.export_pronounces_audio(
                 text.split("_"), voice, file_type)
@@ -120,11 +128,12 @@ class Ekho(object):
                 bytes_data = f.read()
 
             bottle.response.set_header('Content-type', _MIME_TYPE[file_type])
-            os.remove(filepath)
+            # os.remove(filepath)
             return bytes_data
 
         @app.get('/<voice>/phonetic/<text>')
         def get_phonetic(voice, text):
+            text = to_text_type(text)
             return self.get_phonetic(voice, text)
 
         @app.error(404)

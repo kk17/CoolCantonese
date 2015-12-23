@@ -2,8 +2,9 @@
 # -*- coding: utf-8 -*-
 
 from coolcantonese.ekho import Ekho
+from coolcantonese.util import pathname2url
 from webtest import TestApp as App
-from six.moves import urllib
+
 # import sh
 import pytest
 
@@ -28,27 +29,27 @@ def app(tmpdir):
 
 
 def test_export_pronounces_audio_ok(app):
-    url = urllib.request.pathname2url("/Cantonese/text/你好.mp3")
+    url = pathname2url(u"/Cantonese/text/你好.mp3")
     result = app.get(url)
     assert result.status_int == 200
     assert result.headers['Content-Type'] == 'audio/mpeg'
 
 
 def test_get_phonetic_audio_ok(app):
-    url = urllib.request.pathname2url("/Cantonese/phonetic/nei5_hou2.wav")
+    url = pathname2url(u"/Cantonese/phonetic/nei5_hou2.wav")
     result = app.get(url)
     assert result.status_int == 200
     assert result.headers['Content-Type'] == 'audio/wav'
 
 
 def test_get_phonetic_text_ok(app):
-    url = urllib.request.pathname2url("/Cantonese/phonetic/你好")
+    url = pathname2url(u"/Cantonese/phonetic/你好")
     result = app.get(url)
     assert result.status_int == 200
-    assert result.text == "nei5 hou2"
+    assert "nei5 hou2" in result.text
 
 
 def test_404(app):
-    url = urllib.request.pathname2url("/Cantonese/text/你好.kk")
+    url = pathname2url(u"/Cantonese/text/你好.kk")
     result = app.get(url, expect_errors=True)
     assert result.status_int == 404

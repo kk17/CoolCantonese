@@ -17,10 +17,12 @@ from coolcantonese.ekho import Ekho
 from coolcantonese.session import SmartSession
 
 config_logging()
+
 logger = logging.getLogger(__name__)
 
 
-cfg = Config(default_config, None, "~/.coolcantonese.json")
+cfg = Config(
+    default_config, "coolcantonese/conf/config.json", "~/.coolcantonese.json")
 
 
 client = None
