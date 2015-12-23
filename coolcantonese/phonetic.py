@@ -13,18 +13,22 @@ logger = logging.getLogger(__name__)
 
 
 @six.python_2_unicode_compatible
-class Pronunciation(object):
+class NotedChar(object):
 
-    """docstring for Pronunciation"""
+    """标记了音标的文字"""
 
     def __init__(
-            self, character, pronunciation,
+            self, char, symbols,
             use_cases=None, explanation=None):
 
-        super(Pronunciation, self).__init__()
-        self.character = character
-        self.pronunciation = pronunciation
+        super(NotedChar, self).__init__()
+        # 文字
+        self.char = char
+        # 音标
+        self.symbols = symbols
+        # 用例
         self.use_cases = use_cases
+        # 解释
         self.explanation = explanation
         # 异读字
         self.variant = False
@@ -36,7 +40,7 @@ class Pronunciation(object):
         self.interchangeable = False
 
     def pretty(self):
-        ret = "%s\t%s" % (self.character, self.pronunciation)
+        ret = "%s\t%s" % (self.char, self.symbols)
         if self.explanation:
             ret += "\n"
             ret += self.explanation
@@ -81,11 +85,11 @@ def _parse_line(line):
     line = line.strip()
     sp = line.split("\t")
     if len(sp) == 3:
-        character = sp[0]
-        #  print character.encode("utf-8")
-        pronunciation = sp[1]
-        #  print pronunciation.encode("utf-8")
-        p = Pronunciation(character, pronunciation)
+        char = sp[0]
+        #  print char.encode("utf-8")
+        symbols = sp[1]
+        #  print symbols.encode("utf-8")
+        p = NotedChar(char, symbols)
         use_cases = None
         explanation = None
         ue = sp[2]
@@ -133,34 +137,34 @@ def mix_notations(in_str, rlist):
 
 
 @six.python_2_unicode_compatible
-class NotationResult(object):
+class NotedCharsResult(object):
 
     """一段文字语音标记结果"""
 
-    def __init__(self, in_str, plist):
-        super(NotationResult, self).__init__()
+    def __init__(self, in_str, noted_chars):
+        super(NotedCharsResult, self).__init__()
         self.in_str = in_str
-        self.plist = plist
+        self.noted_chars = noted_chars
 
     def pretty(self):
-        return mix_notations(self.in_str, self.plist)
+        return mix_notations(self.in_str, self.noted_chars)
 
     def __str__(self):
         return self.pretty()
 
 
 @six.python_2_unicode_compatible
-class PronunciationsResult(object):
+class SymbolsResult(object):
 
-    """某个字的粤语发音列表"""
+    """某个字的粤语音标列表"""
 
-    def __init__(self, character, plist):
-        super(PronunciationsResult, self).__init__()
-        self.character = character
-        self.plist = plist
+    def __init__(self, char, noted_chars):
+        super(SymbolsResult, self).__init__()
+        self.char = char
+        self.noted_chars = noted_chars
 
     def pretty(self):
-        prettys = [p.pretty() for p in self.plist]
+        prettys = [p.pretty() for p in self.noted_chars]
         return "\n---------\n".join(prettys)
 
     def __str__(self):
@@ -168,17 +172,17 @@ class PronunciationsResult(object):
 
 
 @six.python_2_unicode_compatible
-class CharactersResult(object):
+class CharsResult(object):
 
-    """发某个粤语语音的文字列表"""
+    """某个音标的对应的粤语文字列表"""
 
-    def __init__(self, pronunciation, plist):
-        super(CharactersResult, self).__init__()
-        self.pronunciation = pronunciation
-        self.plist = plist
+    def __init__(self, symbols, noted_chars):
+        super(CharsResult, self).__init__()
+        self.symbols = symbols
+        self.noted_chars = noted_chars
 
     def pretty(self):
-        prettys = [p.character for p in self.plist]
+        prettys = [p.char for p in self.noted_chars]
         return ",".join(prettys)
 
     def __str__(self):
@@ -197,7 +201,7 @@ _p3 = re.compile(u"基本解释\n(.*)(?=笔画数)")
 #    print g.encode("utf-8")
 
 
-def fetch_pronunciation(char):
+def fetch_symbols(char):
     url = "http://ykyi.net/dict/index.php?" + \
         urlencode({"char": char.encode("utf-8")})
     #  print char.encode("utf-8")
@@ -231,13 +235,13 @@ def fetch_pronunciation(char):
             #  print e.encode("utf-8")
             exps.append(e.strip())
         #  print exps
-    plist = []
+    noted_chars = []
     for p, e in zip(pronus, exps):
         if not p:
             continue
-        pObj = Pronunciation(char, p, None, e)
-        plist.append(pObj)
-    return plist
+        pObj = NotedChar(char, p, None, e)
+        noted_chars.append(pObj)
+    return noted_chars
 
 
 _p_chn_char = re.compile(u"[\u4e00-\u9fa5]")
@@ -250,8 +254,8 @@ class NotationMarker(object):
     def __init__(self, datafile):
         super(NotationMarker, self).__init__()
         self.datafile = datafile
-        char_map = {}
-        pronon_map = {}
+        char_key_dict = {}
+        symbols_key_dic = {}
         lines = open(datafile, "r", "utf-8").readlines()
         for line in lines:
             #  print line
@@ -259,22 +263,22 @@ class NotationMarker(object):
             if p:
                 #  print p
                 #  print
-                if p.character not in char_map:
-                    char_map[p.character] = []
-                char_map[p.character].append(p)
+                if p.char not in char_key_dict:
+                    char_key_dict[p.char] = []
+                char_key_dict[p.char].append(p)
 
-                if p.pronunciation not in pronon_map:
-                    pronon_map[p.pronunciation] = []
-                pronon_map[p.pronunciation].append(p)
-        self.char_map = char_map
-        self.pronon_map = pronon_map
-        #  print len(char_map)
-        #  print len(pronon_map)
+                if p.symbols not in symbols_key_dic:
+                    symbols_key_dic[p.symbols] = []
+                symbols_key_dic[p.symbols].append(p)
+        self.char_key_dict = char_key_dict
+        self.symbols_key_dic = symbols_key_dic
+        #  print len(char_key_dict)
+        #  print len(symbols_key_dic)
 
-    def choose_one(self, plist, in_str):
+    def choose_one(self, noted_chars, in_str):
         maxlen = 0
         longp = None
-        for p in plist:
+        for p in noted_chars:
             lenp = 0
             if p.use_cases:
                 for u in p.use_cases:
@@ -306,58 +310,58 @@ class NotationMarker(object):
         rlist = []
         for c in in_str:
             #  print c.encode("utf-8")
-            plist = self.char_map.get(c)
+            noted_chars = self.char_key_dict.get(c)
 
-            if not plist and _p_chn_char.search(c):
+            if not noted_chars and _p_chn_char.search(c):
                 try:
                     logger.info("miss %s", c)
-                    plist = fetch_pronunciation(c)
-                    self.char_map[c] = plist
+                    noted_chars = fetch_symbols(c)
+                    self.char_key_dict[c] = noted_chars
                     with open(self.datafile, "a", "utf-8") as f:
-                        for p in plist:
+                        for p in noted_chars:
                             exp = p.explanation
                             if not exp:
                                 exp = u"暂无解释"
                             line = "%s\t%s\t%s\n" % (
-                                p.character, p.pronunciation, exp)
+                                p.char, p.symbols, exp)
                             logger.info(line)
                             f.write(line)
                 except Exception as e:
-                    logger.info("fetch %s pronunciation error", c)
+                    logger.info("fetch %s symbols error", c)
                     logger.error(e)
 
-            if plist:
-                if len(plist) == 1:
-                    rlist.append(plist[0].pronunciation)
+            if noted_chars:
+                if len(noted_chars) == 1:
+                    rlist.append(noted_chars[0].symbols)
                 else:
-                    bestp = self.choose_one(plist, in_str)
-                    rlist.append(bestp.pronunciation)
+                    bestp = self.choose_one(noted_chars, in_str)
+                    rlist.append(bestp.symbols)
             else:
                 rlist.append(None)
         return rlist
 
-    def get_notations_result(self, in_str):
-        plist = self.get_notations(in_str)
-        return NotationResult(in_str, plist)
+    def get_noted_chars(self, in_str):
+        noted_chars = self.get_notations(in_str)
+        return NotedCharsResult(in_str, noted_chars)
 
-    def get_pronunciations(self, character):
-        return self.char_map.get(character, None)
+    def _get_symbols(self, char):
+        return self.char_key_dict.get(char, None)
 
-    def get_pronunciations_result(self, character):
-        plist = self.get_pronunciations(character)
-        if plist:
-            return PronunciationsResult(character, plist)
+    def get_symbols(self, char):
+        noted_chars = self._get_symbols(char)
+        if noted_chars:
+            return SymbolsResult(char, noted_chars)
         else:
             return None
 
-    def get_characters(self, pronunciation):
-        return self.pronon_map.get(pronunciation, None)
+    def _get_chars(self, symbols):
+        return self.symbols_key_dic.get(symbols, None)
 
-    def get_characters_result(self, pronunciation):
-        plist = self.get_characters(pronunciation)
-        if plist:
-            #  for p in plist:
+    def get_chars(self, symbols):
+        noted_chars = self._get_chars(symbols)
+        if noted_chars:
+            #  for p in noted_chars:
             #    print p
-            return CharactersResult(pronunciation, plist)
+            return CharsResult(symbols, noted_chars)
         else:
             return None

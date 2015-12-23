@@ -4,7 +4,7 @@
 import pytest
 from coolcantonese.phonetic import (
     NotationMarker,
-    fetch_pronunciation,
+    fetch_symbols,
 )
 
 
@@ -13,37 +13,37 @@ def marker():
     return NotationMarker("coolcantonese/data/phonetic-data.txt")
 
 
-# def get_notations_result(in_str):
-#     return _default.get_notations_result(in_str)
+# def get_noted_chars(in_str):
+#     return _default.get_noted_chars(in_str)
 
 
-# def get_pronunciations_result(character):
-#     return _default.get_pronunciations_result(character)
+# def get_symbols(char):
+#     return _default.get_symbols(char)
 
 
-# def get_characters_result(pronunciation):
-#     return _default.get_characters_result(pronunciation)
+# def get_chars(symbols):
+#     return _default.get_chars(symbols)
 
 
-def test_get_notations_result(marker):
+def test_get_noted_chars(marker):
     #  import sys
     #  reload(sys)
     #  sys.setdefaultencoding("utf-8")
     #  print len(_default.char_map)
     in_str = u"屎窟"
-    r = marker.get_notations_result(in_str)
+    r = marker.get_noted_chars(in_str)
     print(r)
 
     #  print("")
-    #  r = get_pronunciations_result(u"中")
+    #  r = get_symbols(u"中")
     #  print(r)
 
     #  print
-    #  r = get_characters_result("zung1")
+    #  r = get_chars("zung1")
     #  print(r)
 
 
-def test_fetch_pronunciation():
-    plist = fetch_pronunciation(u"度")
-    for p in plist:
+def test_fetch_symbols():
+    noted_chars = fetch_symbols(u"度")
+    for p in noted_chars:
         print(p)

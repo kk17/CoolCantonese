@@ -161,7 +161,7 @@ def check_and_refresh_user_chat_mode(userid):
 def get_chars(txtMsg):
     content = txtMsg.content
     logger.debug("content:%s", content)
-    r = notation_marker.get_characters_result(content)
+    r = notation_marker.get_chars(content)
     if r:
         try:
             url = ekho.get_pronounces_audio_url([content])
@@ -206,7 +206,7 @@ chn = re.compile(u"^[\u4e00-\u9fa5]$")
 def get_pronus(txtMsg):
     userid = txtMsg.source
     content = txtMsg.content
-    r = notation_marker.get_pronunciations_result(content)
+    r = notation_marker.get_symbols(content)
     if r:
         if cache_user_msg(userid, content):
             return r.pretty() + u"\n--回复#获得语音--"
@@ -216,13 +216,13 @@ def get_pronus(txtMsg):
         return u"暂无解析"
 
 
-def get_notations_result(userid, content):
-    r = notation_marker.get_notations_result(content)
+def get_noted_chars(userid, content):
+    r = notation_marker.get_noted_chars(content)
     if r:
         if cache_user_msg(userid, "@"+content):
             result = TranslateResult()
             result.words = r.in_str
-            result.pronounce_list = r.plist
+            result.pronounce_list = r.noted_chars
             result.has_pronounce = True
             cache_notations(userid, result)
             return r.pretty() + u"\n--回复#获得语音--"
@@ -264,10 +264,10 @@ def get_last_msg_audio(userid):
     content = session.get(key)
     if content:
         if chn.search(content):  # 单个汉字
-            r = notation_marker.get_pronunciations_result(content)
+            r = notation_marker.get_symbols(content)
             prons = []
-            for p in r.plist:
-                prons.append(p.pronunciation)
+            for p in r.noted_chars:
+                prons.append(p.symbols)
             url = ekho.get_pronounces_audio_url(prons)
             return [content, ",".join(prons), url]
         elif content.startswith("@"):
@@ -298,7 +298,7 @@ def handle_text_msg(txtMsg):
     logger.info("revice text message from: %s, content: %s", userid, content)
     if content.startswith(u"@"):
         content = content[1:]
-        return get_notations_result(userid, content)
+        return get_noted_chars(userid, content)
     if u"#" == content or u"＃" == content:
         return get_last_msg_audio(userid)
     need_translation_content = content

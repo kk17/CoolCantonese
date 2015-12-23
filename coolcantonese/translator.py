@@ -153,11 +153,11 @@ class BaiduTranslator(Translator):
             dst = t["dst"]
             result_text = result_text + "\n" + dst
         result_text = result_text[1:]
-        r = self.notation_marker.get_notations_result(result_text)
-        logger.debug(r.plist)
+        r = self.notation_marker.get_noted_chars(result_text)
+        logger.debug(r.noted_chars)
         result = TranslateResult()
         result.words = r.in_str
-        result.pronounce_list = r.plist
+        result.pronounce_list = r.noted_chars
         result.has_pronounce = True
         return result
 
