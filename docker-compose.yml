@@ -1,0 +1,8 @@
+coolcantonese:
+    build: .
+    ports:
+      - "8888:8888"
+    links:
+      - redis
+redis:
+    image: sameersbn/redis

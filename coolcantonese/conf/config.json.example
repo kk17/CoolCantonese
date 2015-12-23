@@ -1,0 +1,17 @@
+{
+    "use_redis_session": true,
+    "redis_host": "redis",
+    "redis_port": 6379,
+    "redis_db": 1,
+    "redis_password": "",
+    "enable_tuling_robot": true,
+    "tuling_api_key": "",
+    "use_baidu_translator": true,
+    "baidu_app_id": "",
+    "baidu_app_secret": "",
+    "host": "0.0.0.0",
+    "port": "8888",
+    "audio_folder": "/tmp",
+    "wechat_token": "kk17",
+    "audio_url_prefix": "http://localhost:8888"
+}
