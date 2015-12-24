@@ -1,5 +1,7 @@
 coolcantonese:
     build: .
+    environment:
+     - use_redis_session=true
     ports:
       - "8888:8888"
     links:
