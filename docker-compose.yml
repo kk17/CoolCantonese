@@ -1,7 +1,15 @@
 coolcantonese:
-    build: .
+    image: kk17/coolcantonese-runtime
     environment:
      - use_redis_session=true
+     - wechat_token=R1A5ZtDqm7OrpFa9xPKsu
+     - LOG_LEVEL=DEBUG
+     #copy codes
+    volumes:
+     - ./coolcantonese/:/usr/lib/python3/dist-packages/coolcantonese
+    working_dir: /usr/lib/python3/dist-packages
+    entrypoint: python3
+    command: coolcantonese/wechat.py
     ports:
       - "8888:8888"
     links:

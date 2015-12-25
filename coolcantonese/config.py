@@ -72,4 +72,4 @@ class Config(AttrDict):
             self, json_config_filepath, global_json_config_filepath)
         if enable_env_config:
             update_config_with_env_config(self)
-        logger.debug("final config: %s.", self)
+        logger.info("final config: %s.", self)

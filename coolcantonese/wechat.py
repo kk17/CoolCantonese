@@ -22,7 +22,8 @@ logger = logging.getLogger(__name__)
 
 
 cfg = Config(
-    default_config, "coolcantonese/conf/config.json", "~/.coolcantonese.json")
+    default_config, "coolcantonese/conf/config.json",
+    "~/.coolcantonese.json", enable_env_config=True)
 
 
 client = None
