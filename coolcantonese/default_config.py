@@ -11,6 +11,7 @@ default_config = {
     "enable_tuling_robot": False,
     "tuling_api_key": "",
     "use_baidu_translator": False,
+    "use_l2china_translator": False,
     "baidu_app_id": "",
     "baidu_app_secret": "",
     "host": "0.0.0.0",
