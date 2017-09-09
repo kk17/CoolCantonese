@@ -16,3 +16,4 @@ examples/output/
 coolcantonese/conf/config.json
 coolcantonese/conf/config.yml
 tests/simulator.py
+.vscode/
