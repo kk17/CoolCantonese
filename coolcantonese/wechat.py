@@ -22,7 +22,8 @@ logger = logging.getLogger(__name__)
 
 
 cfg = Config(
-    default_config, "coolcantonese/conf/config.json", "~/.coolcantonese.json")
+    default_config, "coolcantonese/conf/config.json",
+    "~/.coolcantonese.json", enable_env_config=True)
 
 
 client = None
@@ -113,9 +114,9 @@ article_menu = [
     [u"收听《粤讲粤酷》电台", "",
      "http://7sbpek.com1.z0.glb.clouddn.com/img/radio.jpg",
      "http://music.163.com/djradio?id=225001"],
-    [u"听电影答对白，星爷粉丝大考验", "",
-     "http://7sbpek.com1.z0.glb.clouddn.com/img/stephen.jpg",
-     "http://stephen.kkee.tk"]
+    [u"一起粤讲粤酷", "",
+     "http://7sbqvb.com1.z0.glb.clouddn.com/img/cantonese01.jpg",
+     "https://mp.weixin.qq.com/s/jQdK5sDFz0__DE6Sygtb7w"]
 ]
 
 

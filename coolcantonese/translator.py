@@ -208,7 +208,8 @@ class SmartTranslator(object):
                     cfg.baidu_app_id, cfg.baidu_app_secret, notation_marker
                 )
             )
-        self.translators.append(L2ChinaTranslator())
+        if cfg.use_l2china_translator:
+            self.translators.append(L2ChinaTranslator())
 
     def get_translation(self, text):
         last_exception = None

@@ -50,6 +50,7 @@ redis>=2.10.3
 sh>=1.0.8
 six>=1.10.0
 requests>=2.8.1
+logutils>=0.3.3
 """
 
 setup(

@@ -1,4 +1,7 @@
 # 粤讲粤酷微信公众号工程
+[![Build Status](https://travis-ci.org/kk17/CoolCantonese.svg)](https://travis-ci.org/kk17/CoolCantonese)
+
+
 为了方便身边的朋友学习粤语，开发了这个微信公众号，提供在线国语到粤语的文字和语音翻译。微信扫描下面的二维码即可关注公众号。
 
 ![粤讲粤酷](http://7sbpek.com1.z0.glb.clouddn.com/img/qrcode.jpg)
