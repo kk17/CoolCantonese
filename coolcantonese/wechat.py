@@ -379,7 +379,9 @@ def translate(userid, content, in_chat_mode=False, user_content=None):
 def subscribe(message):
     return cfg.subscribe_msg
 
+ekho.wsgi.merge(robot.wsgi)
+
 if __name__ == '__main__':
-    ekho.wsgi.merge(robot.wsgi)
+    # ekho.wsgi.merge(robot.wsgi)
     ekho.run(None, cfg.host, cfg.port)
     # ekho.run(None, cfg.host, cfg.port)

@@ -8,6 +8,7 @@
 
 ## 配置
 参考coolcantonese/conf目录下的`config.json.example`
+如果使用Docker部署，参考`.env.example`
 
 ## 部署
 推荐使用docker部署

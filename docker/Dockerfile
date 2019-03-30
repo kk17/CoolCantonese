@@ -4,7 +4,7 @@ ENV REFRESHED_AT 2015-12-20
 
 ENV PYTHONUNBUFFERED 1
 
-RUN sed 's/http:\/\/archive\.ubuntu\.com\/ubuntu\//mirror:\/\/mirrors\.ubuntu\.com\/mirrors.txt/' -i /etc/apt/sources.list
+# RUN sed 's/http:\/\/archive\.ubuntu\.com\/ubuntu\//mirror:\/\/mirrors\.ubuntu\.com\/mirrors.txt/' -i /etc/apt/sources.list
 
 ## python3-pip and python3-lxml
 RUN \

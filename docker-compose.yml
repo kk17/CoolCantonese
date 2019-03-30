@@ -1,18 +1,30 @@
-coolcantonese:
-    image: kk17/coolcantonese-runtime
-    environment:
-     - use_redis_session=true
-     - wechat_token=R1A5ZtDqm7OrpFa9xPKsu
-     - LOG_LEVEL=DEBUG
-     #copy codes
-    volumes:
-     - ./coolcantonese/:/usr/lib/python3/dist-packages/coolcantonese
-    working_dir: /usr/lib/python3/dist-packages
-    entrypoint: python3
-    command: coolcantonese/wechat.py
-    ports:
-      - "8888:8888"
-    links:
-      - redis
-redis:
-    image: sameersbn/redis
+version: "3.1"
+
+services:
+  web:
+      build: docker/
+      environment:
+       - use_redis_session=${use_redis_session}
+       - wechat_token=${wechat_token}
+       - redis_host=${redis_host}
+       - redis_port=${redis_port}
+       - redis_db=${redis_db}
+       - redis_password=${redis_password}
+       - enable_tuling_robot=${enable_tuling_robot}
+       - tuling_api_key=${tuling_api_key}
+       - use_baidu_translator=${use_baidu_translator}
+       - baidu_app_id=${baidu_app_id}
+       - baidu_app_secret=${baidu_app_secret}
+       - audio_folder=${audio_folder}
+       - audio_url_prefix=${audio_url_prefix}
+       - LOG_LEVEL=${LOG_LEVEL}
+      volumes:
+       - ./coolcantonese/:/workspace/coolcantonese
+      working_dir: /workspace
+      command: bash -c "ls -al && gunicorn -b 0.0.0.0:8888 coolcantonese.wechat:ekho.wsgi"
+      ports:
+        - "${host}:${port}:8888"
+      depends_on:
+        - redis
+  redis:
+      image: redis
