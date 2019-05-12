@@ -110,12 +110,12 @@ def get_mediaid(noted_chars):
 # 如果语音没有声音，请暂停再播放
 # """
 article_menu = [
-    ["", "", "http://7sbpek.com1.z0.glb.clouddn.com/img/menu6.png", ""],
+    ["", "", "https://kyle-static.oss-ap-southeast-1.aliyuncs.com/img/menu6.png", ""],
     [u"收听《粤讲粤酷》电台", "",
-     "http://7sbpek.com1.z0.glb.clouddn.com/img/radio.jpg",
+     "https://kyle-static.oss-ap-southeast-1.aliyuncs.com/img/radio.jpg",
      "http://music.163.com/djradio?id=225001"],
     [u"一起粤讲粤酷", "",
-     "http://7sbqvb.com1.z0.glb.clouddn.com/img/cantonese01.jpg",
+     "https://kyle-static.oss-ap-southeast-1.aliyuncs.com/img/cantonese01.jpg",
      "https://mp.weixin.qq.com/s/jQdK5sDFz0__DE6Sygtb7w"]
 ]
 
@@ -240,7 +240,7 @@ def get_noted_chars(userid, content):
 #              u"《粤讲粤酷》电台在网易云音乐开播啦！每期邀请嘉宾以脱口秀的形式教学粤语，"
 #              u"希望大家能够在轻松愉快的氛围中学会粤语。喜欢的朋友更课使用网易"
 #              u"云音乐客户端订阅电台，这样每期更新都会有提醒哟！",
-#              "http://7sbpek.com1.z0.glb.clouddn.com/img/radio.jpg",
+#              "https://kyle-static.oss-ap-southeast-1.aliyuncs.com/img/radio.jpg",
 #              "http://music.163.com/djradio?id=225001"]]
 
 
@@ -256,7 +256,7 @@ def get_noted_chars(userid, content):
 # def get_stephen_game():
 #     return [[u"星爷粉丝大考验",
 #              u"听对白答电影，星爷粉丝大考验",
-#              "http://7sbpek.com1.z0.glb.clouddn.com/img/stephen.jpg",
+#              "https://kyle-static.oss-ap-southeast-1.aliyuncs.com/img/stephen.jpg",
 #              "http://stephen.kkee.tk"]]
 
 
