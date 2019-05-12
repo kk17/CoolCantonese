@@ -23,5 +23,6 @@ default_config = {
     "wechat_token": "kk17",
     "subscribe_msg": u"谢谢关注粤讲粤酷，发送？获取帮助",
     "audio_url_prefix": "http://localhost:8888",
+    "menu_url": "https://mp.weixin.qq.com/s/JYk8XS4oacepJLybR68olg",
     "debug": False
 }

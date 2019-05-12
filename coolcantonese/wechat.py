@@ -110,7 +110,7 @@ article_menu = [
         u"帮助菜单",
         u"让我们一起粤讲粤酷！",
         "https://kyle-static.oss-ap-southeast-1.aliyuncs.com/img/CoolCantonese.jpg",
-        "https://mp.weixin.qq.com/s/JYk8XS4oacepJLybR68olg"
+        cfg.menu_url
     ],
 ]
 
