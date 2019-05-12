@@ -94,10 +94,6 @@ def get_mediaid(noted_chars):
 
 # text_menu = u"""\
 # 功能：
-# * ：收听电台
-# # ：获得上一条翻译的语音
-# 1 ：进入微社区论坛
-# 2 ：星爷粉丝大考验
 # 发送文字或语音获得文字翻译及注音
 # 发送#+文字获得粤语语音翻译
 # 发送@+文字获得文字粤语注音
@@ -110,13 +106,12 @@ def get_mediaid(noted_chars):
 # 如果语音没有声音，请暂停再播放
 # """
 article_menu = [
-    ["", "", "https://kyle-static.oss-ap-southeast-1.aliyuncs.com/img/menu6.png", ""],
-    [u"收听《粤讲粤酷》电台", "",
-     "https://kyle-static.oss-ap-southeast-1.aliyuncs.com/img/radio.jpg",
-     "http://music.163.com/djradio?id=225001"],
-    [u"一起粤讲粤酷", "",
-     "https://kyle-static.oss-ap-southeast-1.aliyuncs.com/img/cantonese01.jpg",
-     "https://mp.weixin.qq.com/s/jQdK5sDFz0__DE6Sygtb7w"]
+    [
+        u"帮助菜单",
+        u"让我们一起粤讲粤酷！",
+        "https://kyle-static.oss-ap-southeast-1.aliyuncs.com/img/CoolCantonese.jpg",
+        "https://mp.weixin.qq.com/s/JYk8XS4oacepJLybR68olg"
+    ],
 ]
 
 
