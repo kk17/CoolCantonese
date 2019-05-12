@@ -3,9 +3,12 @@
 
 [中文](./README.md)
 
-In order to help my friends to learn Cantonese, I develop this WeChat official account which provide text and voice translation from Mandarin to Cantonese. You can use WeChat to scan the fellow QR code to subscribe the offcial account.
+In order to help my friends to learn Cantonese, I develop this WeChat official account which provide text translation from many other languages to Cantonese and voice translation from Mandarin to Cantonese. You can use WeChat to scan the fellow QR code to subscribe the official account.
 
-![CoolCantonese](./qrcode.jpg)
+![CoolCantonese](./docs/qrcode.jpg)
+
+Support languages:
+![Support languages](./docs/support_input_languages.png)
 
 ## Development
 

@@ -11,7 +11,7 @@ from coolcantonese.config import Config
 from coolcantonese.default_config import default_config
 from coolcantonese.record import Record, RecordService
 from coolcantonese.tuling import TulingService
-from coolcantonese.translator import SmartTranslator, TranslateResult
+from coolcantonese.translator import SmartTranslator, TranslateResult, InputLanguage
 from coolcantonese.phonetic import NotationMarker
 from coolcantonese.ekho import Ekho
 from coolcantonese.session import SmartSession
@@ -48,7 +48,7 @@ ekho = Ekho(cfg.audio_folder, cfg.audio_url_prefix)
 translator = SmartTranslator(cfg)
 
 
-def get_cache_translation(content):
+def get_cache_translation(content, input_language=InputLanguage.AutoDetect):
     result = None
     key = "tansalation:" + content
     try:
@@ -58,7 +58,7 @@ def get_cache_translation(content):
             logger.debug("find cached translation")
         else:
             logger.debug("no cached translation found")
-            result = translator.get_translation(content)
+            result = translator.get_translation(content, input_language)
             if result:
                 session.set(key, result)
                 session.expire(key, cfg.translation_expire_seconds)

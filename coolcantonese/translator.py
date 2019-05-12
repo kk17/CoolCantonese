@@ -6,11 +6,17 @@ import bs4
 import logging
 import requests
 import six
+import enum
+from abc import ABC, abstractmethod
 from coolcantonese.exceptions import TranslationException
 from coolcantonese.phonetic import NotationMarker
 
 logger = logging.getLogger(__name__)
 
+class InputLanguage(enum.Enum):
+    Mandarin = "Mandarin"
+    English = "English"
+    AutoDetect = "AutoDetect"
 
 @six.python_2_unicode_compatible
 class TranslateResult(object):
@@ -62,14 +68,15 @@ class TranslateResult(object):
         return self.pretty()
 
 
-class Translator(object):
+class Translator(ABC):
 
     """提供普通话到粤语的翻译接口"""
 
     def __init__(self):
         super(Translator, self).__init__()
 
-    def get_translation(self, text):
+    @abstractmethod
+    def get_translation(self, text, input_language):
         pass
 
 
@@ -97,7 +104,7 @@ class L2ChinaTranslator(Translator):
             return result
         raise TranslationException("暂无翻译结果")
 
-    def get_translation(self, text):
+    def get_translation(self, text, input_language):
         traslate_url = "http://www.l2china.com/yueyu/"
         text_len_limit = 100
 
@@ -168,7 +175,7 @@ class BaiduTranslator(Translator):
 # appid   INT Y   APP ID  可在管理控制台查看
 # salt    INT Y   随机数
 # sign    TEXT    Y   签名  appid+q+salt+密钥 的MD5值
-    def get_translation(self, text):
+    def get_translation(self, text, input_language):
         api_url = "http://api.fanyi.baidu.com/api/trans/vip/translate"
         salt = str(random.randint(0, 1000000000000000))
         if isinstance(text, six.text_type):
@@ -176,8 +183,14 @@ class BaiduTranslator(Translator):
         else:
             utf8_txt = text
         sign = md5(self.app_id + text + salt + self.app_secret)
+        from_language = "auto"
+        if input_language is InputLanguage.Mandarin:
+            from_language = "zh"
+        elif input_language is InputLanguage.English:
+            from_language = "en"
+
         params = {
-            "from": "zh",
+            "from": from_language,
             "to": "yue",
             "appid": self.app_id,
             "q": utf8_txt,
@@ -211,11 +224,11 @@ class SmartTranslator(object):
         if cfg.use_l2china_translator:
             self.translators.append(L2ChinaTranslator())
 
-    def get_translation(self, text):
+    def get_translation(self, text, input_language=InputLanguage.AutoDetect):
         last_exception = None
         for translator in self.translators:
             try:
-                result = translator.get_translation(text)
+                result = translator.get_translation(text, input_language)
                 if result:
                     return result
             except Exception as e:

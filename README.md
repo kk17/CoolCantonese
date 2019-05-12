@@ -3,9 +3,12 @@
 
 [En](./README_en.md)
 
-为了方便身边的朋友学习粤语，开发了这个微信公众号，提供在线国语到粤语的文字和语音翻译。微信扫描下面的二维码即可关注公众号。
+为了方便身边的朋友学习粤语，开发了这个微信公众号，提供在线多种语言到粤语的文字和语音翻译。微信扫描下面的二维码即可关注公众号。
 
-![粤讲粤酷](./qrcode.jpg)
+![粤讲粤酷](./docs/qrcode.jpg)
+
+支持输入语言列表:
+![支持输入语言列表](./docs/support_input_languages.png)
 
 ## 配置
 参考coolcantonese/conf目录下的`config.json.example`
