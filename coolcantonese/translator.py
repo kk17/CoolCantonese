@@ -7,7 +7,7 @@ import logging
 import requests
 import six
 import enum
-from abc import ABC, abstractmethod
+import abc
 from coolcantonese.exceptions import TranslationException
 from coolcantonese.phonetic import NotationMarker
 
@@ -67,15 +67,15 @@ class TranslateResult(object):
     def __str__(self):
         return self.pretty()
 
-
-class Translator(ABC):
+@six.add_metaclass(abc.ABCMeta)
+class Translator():
 
     """提供普通话到粤语的翻译接口"""
 
     def __init__(self):
         super(Translator, self).__init__()
 
-    @abstractmethod
+    @abc.abstractmethod
     def get_translation(self, text, input_language):
         pass
 
