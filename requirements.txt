@@ -6,4 +6,4 @@ sh==1.12.14
 six==1.14.0
 requests==2.23.0
 logutils==0.3.5
-gunicorn==19.4.0
+gunicorn==19.10.0
