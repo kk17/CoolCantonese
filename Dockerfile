@@ -1,13 +1,21 @@
-FROM kk17/coolcantonese-runtime
+# Ubuntu 14.04.3 LTS 
+FROM kk17/ekho 
+LABEL Author Zhike Chan "zk.chan007@gmail.com"
 
-MAINTAINER Zhike Chan "zk.chan007@gmail.com"
-ENV REFRESHED_AT 2015-12-23
+ENV PYTHONUNBUFFERED 1
 
-#copy codes
-COPY ./coolcantonese/ /usr/lib/python3/dist-packages/coolcantonese
-WORKDIR /usr/lib/python3/dist-packages
+# python 3.4
+RUN \
+  set -x && \
+  apt-get update && \
+  apt-get install -y python3-pip python3-lxml && \
+  rm -rf /var/lib/apt/lists/*
 
-EXPOSE 8888
+## Install Python packages.
+COPY requirements.txt /tmp/
+RUN pip3 install -r /tmp/requirements.txt && rm /tmp/requirements.txt
+COPY ./coolcantonese/ /workspace/coolcantonese/
+WORKDIR /workspace
 
-ENTRYPOINT ["python3"]
-CMD ["coolcantonese/wechat.py"]
+ENTRYPOINT [ ]
+CMD gunicorn -b 0.0.0.0:8888 coolcantonese.wechat:ekho.wsgi

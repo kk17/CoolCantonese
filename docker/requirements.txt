@@ -1,9 +1,0 @@
-werobot>=0.6.0
-beautifulsoup4>=4.3.2
-lxml>=3.3.3
-redis>=2.10.3
-sh>=1.0.8
-six>=1.10.0
-requests>=2.8.1
-logutils>=0.3.3
-gunicorn>=19.4.0
