@@ -17,5 +17,7 @@ RUN pip3 install -r /tmp/requirements.txt && rm /tmp/requirements.txt
 COPY ./coolcantonese/ /workspace/coolcantonese/
 WORKDIR /workspace
 
+EXPOSE 8888
+
 ENTRYPOINT [ ]
 CMD gunicorn -b 0.0.0.0:8888 coolcantonese.wechat:ekho.wsgi
