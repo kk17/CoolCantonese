@@ -1,7 +1,7 @@
 werobot==1.12.0
 beautifulsoup4==4.8.2
 lxml==4.6.5
-redis==3.4.1
+redis==4.4.4
 sh==1.12.14
 six==1.14.0
 requests==2.23.0
