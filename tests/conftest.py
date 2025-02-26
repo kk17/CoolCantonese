@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
 
+from typing import Any
 import pytest
 from coolcantonese.config import Config
 from coolcantonese.default_config import default_config
 import logging
 
-level = logging.DEBUG
+level: int = logging.DEBUG
 
 logging.basicConfig(
     level=level,
@@ -16,5 +17,10 @@ logging.basicConfig(
 
 
 @pytest.fixture(scope="module")
-def config():
+def config() -> Config:
+    """Fixture providing test configuration.
+    
+    Returns:
+        Config: Application configuration for testing
+    """
     return Config(default_config, None, "~/.coolcantonese.json")

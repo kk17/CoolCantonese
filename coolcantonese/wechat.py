@@ -1,11 +1,14 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 
+from typing import Optional, List, Union, Dict, Any
 import re
 import os
 import logging
 import werobot
 import werobot.client
+import werobot.messages
+import werobot.messages.messages
 from coolcantonese.log import config_logging
 from coolcantonese.config import Config
 from coolcantonese.default_config import default_config
@@ -26,7 +29,7 @@ cfg = Config(
     "~/.coolcantonese.json", enable_env_config=True)
 
 
-client = None
+client: Optional[werobot.client.Client] = None
 if cfg.enable_client:
     client = werobot.client.Client(cfg.appid, cfg.appsecret)
 
@@ -34,11 +37,11 @@ session = SmartSession(cfg)
 
 robot = werobot.WeRoBot(token=cfg.wechat_token, session_storage=session)
 
-record_services = None
+record_services: Optional[RecordService] = None
 if cfg.enable_record_services:
     record_services = RecordService(cfg.record_services_url_prefix)
 
-tuling_robot = None
+tuling_robot: Optional[TulingService] = None
 if cfg.enable_tuling_robot:
     tuling_robot = TulingService(cfg.tuling_api_key)
 
@@ -48,9 +51,9 @@ ekho = Ekho(cfg.audio_folder, cfg.audio_url_prefix)
 translator = SmartTranslator(cfg)
 
 
-def get_cache_translation(content, input_language=InputLanguage.AutoDetect):
+def get_cache_translation(content: str, input_language: InputLanguage = InputLanguage.AutoDetect) -> Optional[TranslateResult]:
     result = None
-    key = "tansalation:" + content
+    key = "translation:" + content
     try:
         logger.debug("try get cached translation")
         result = session.get(key)
@@ -62,17 +65,14 @@ def get_cache_translation(content, input_language=InputLanguage.AutoDetect):
             if result:
                 session.set(key, result)
                 session.expire(key, cfg.translation_expire_seconds)
-    except:
+    except Exception:
         logger.exception("get cache translation error")
     return result
 
 
-def get_mediaid(noted_chars):
-    key = ""
-    for p in noted_chars:
-        if p:
-            key += p
-    if "" == key:
+def get_mediaid(noted_chars: List[str]) -> Optional[str]:
+    key = "".join(filter(None, noted_chars))
+    if not key:
         return None
     key = "mediaid:" + key
     mediaid = session.get(key)
@@ -80,11 +80,12 @@ def get_mediaid(noted_chars):
         return mediaid
     try:
         audio_filename = ekho.export_symbols_audio(noted_chars)
-        if audio_filename:
-            resp = client.upload_media("voice", open(audio_filename, "rb"))
+        if audio_filename and client:
+            with open(audio_filename, "rb") as f:
+                resp = client.upload_media("voice", f)
             os.remove(audio_filename)
             mediaid = resp["media_id"]
-    except:
+    except Exception:
         logger.exception("upload audio file error")
     if mediaid:
         session.set(key, mediaid)
@@ -105,7 +106,7 @@ def get_mediaid(noted_chars):
 # tips:
 # 如果语音没有声音，请暂停再播放
 # """
-article_menu = [
+article_menu: List[List[str]] = [
     [
         u"帮助菜单",
         u"让我们一起粤讲粤酷！",
@@ -116,12 +117,12 @@ article_menu = [
 
 
 @robot.filter(re.compile(u"[\?？]"))
-def get_menu():
+def get_menu() -> List[List[str]]:
     return article_menu
 
 
 @robot.filter(re.compile(u"[!！]"))
-def toggle_chat_mode(txtMsg):
+def toggle_chat_mode(txtMsg: werobot.messages.messages.TextMessage) -> str:
     userid = txtMsg.source
     if toggle_user_chat_mode(userid):
         return u"你已进入聊天模式，欢迎跟我聊天！5分钟没有响应将自动退出聊天模式，回复！可以直接退出。"
@@ -129,8 +130,8 @@ def toggle_chat_mode(txtMsg):
         return u"你已退出进入聊天模式。"
 
 
-def toggle_user_chat_mode(userid, check_and_refresh=False):
-    key = userid+"_chat_mode"
+def toggle_user_chat_mode(userid: str, check_and_refresh: bool = False) -> bool:
+    key = f"{userid}_chat_mode"
     in_chat_mode = session.exists(key)
     if check_and_refresh:
         if in_chat_mode:
@@ -149,12 +150,12 @@ def toggle_user_chat_mode(userid, check_and_refresh=False):
             return True
 
 
-def check_and_refresh_user_chat_mode(userid):
+def check_and_refresh_user_chat_mode(userid: str):
     return toggle_user_chat_mode(userid, True)
 
 
 @robot.filter(re.compile(u"^[a-z]+\d$"))
-def get_chars(txtMsg):
+def get_chars(txtMsg: werobot.messages.messages.TextMessage):
     content = txtMsg.content
     logger.debug("content:%s", content)
     r = notation_marker.get_chars(content)
@@ -170,14 +171,14 @@ def get_chars(txtMsg):
         return u"暂无解析"
 
 
-def cache_user_msg(userid, msg):
+def cache_user_msg(userid: str, msg: str):
     key = userid + "_last_content"
     session.set(key, msg)
     session.expire(key, cfg.translation_expire_seconds)
     return True
 
 
-def cache_notations(userid, result):
+def cache_notations(userid: str, result: TranslateResult):
     if session:
         key = userid + "_last_notations"
         session.set(key, result)
@@ -187,7 +188,7 @@ def cache_notations(userid, result):
         return False
 
 
-def get_cache_notations(userid):
+def get_cache_notations(userid: str):
     if session:
         key = userid + "_last_notations"
         result = session.get(key)
@@ -199,7 +200,7 @@ chn = re.compile(u"^[\u4e00-\u9fa5]$")
 
 
 @robot.filter(chn)
-def get_pronus(txtMsg):
+def get_pronus(txtMsg: werobot.messages.messages.TextMessage):
     userid = txtMsg.source
     content = txtMsg.content
     r = notation_marker.get_symbols(content)
@@ -212,7 +213,7 @@ def get_pronus(txtMsg):
         return u"暂无解析"
 
 
-def get_noted_chars(userid, content):
+def get_noted_chars(userid: str, content: str):
     r = notation_marker.get_noted_chars(content)
     if r:
         if cache_user_msg(userid, "@"+content):
@@ -255,7 +256,7 @@ def get_noted_chars(userid, content):
 #              "http://stephen.kkee.tk"]]
 
 
-def get_last_msg_audio(userid):
+def get_last_msg_audio(userid: str):
     key = userid + "_last_content"
     content = session.get(key)
     if content:
@@ -278,7 +279,7 @@ def get_last_msg_audio(userid):
     pass
 
 
-def get_music_msg(result):
+def get_music_msg(result: TranslateResult):
     if result.has_symbols:
         logger.debug("result.words: %s", result.words)
         url = ekho.get_text_audio_url(result.words)
@@ -288,7 +289,7 @@ def get_music_msg(result):
 
 
 @robot.text
-def handle_text_msg(txtMsg):
+def handle_text_msg(txtMsg: werobot.messages.messages.TextMessage):
     userid = txtMsg.source
     content = txtMsg.content
     logger.info("revice text message from: %s, content: %s", userid, content)
@@ -310,7 +311,7 @@ def handle_text_msg(txtMsg):
 
 
 @robot.voice
-def handle_voice_msg(voiceMsg):
+def handle_voice_msg(voiceMsg: werobot.messages.messages.VoiceMessage):
     userid = voiceMsg.source
     content = voiceMsg.recognition
     logger.info("revice voice message from %s, recognition content: %s" % (
@@ -321,7 +322,7 @@ def handle_voice_msg(voiceMsg):
     return "%s\n-----\n%s" % (content, reply)
 
 
-def translate(userid, content, in_chat_mode=False, user_content=None):
+def translate(userid: str, content: str, in_chat_mode: bool = False, user_content: Optional[str] = None):
     try:
         return_audio = False
         if content.startswith(u"#") or content.startswith(u"＃"):
@@ -371,7 +372,7 @@ def translate(userid, content, in_chat_mode=False, user_content=None):
 
 
 @robot.subscribe
-def subscribe(message):
+def subscribe(message: werobot.messages.events.SubscribeEvent):
     return cfg.subscribe_msg
 
 ekho.wsgi.merge(robot.wsgi)
