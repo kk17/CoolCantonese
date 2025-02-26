@@ -1,9 +1,19 @@
-# syntax=docker/dockerfile:1
 FROM kk17/ekho:9.0_ubuntu_22.04
+
 LABEL Author="Zhike Chan <zk.chan007@gmail.com>"
 LABEL org.opencontainers.image.authors="Zhike Chan <zk.chan007@gmail.com>"
 LABEL org.opencontainers.image.description="CoolCantonese web service with ekho speech synthesis"
 LABEL org.opencontainers.image.source="https://github.com/kk17/CoolCantonese"
+
+# Install Python and dependencies
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+        python3 \
+        python3-venv \
+        python3-pip \
+        curl && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
 
 ENV PYTHONUNBUFFERED=1 \
     PYTHONDONTWRITEBYTECODE=1 \
@@ -11,26 +21,8 @@ ENV PYTHONUNBUFFERED=1 \
     PIP_NO_CACHE_DIR=off \
     PIP_DISABLE_PIP_VERSION_CHECK=on
 
-# Install Python 3.12 and dependencies
-RUN set -ex \
-    && apt-get update \
-    && apt-get install -y --no-install-recommends \
-        software-properties-common \
-        gpg-agent \
-    && add-apt-repository ppa:deadsnakes/ppa \
-    && apt-get update \
-    && apt-get install -y --no-install-recommends \
-        python3.12 \
-        python3.12-dev \
-        python3.12-venv \
-        python3-pip \
-        python3-lxml \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/* \
-    && python3.12 -m pip install --no-cache-dir --upgrade pip setuptools wheel
-
 # Create and activate virtual environment
-RUN python3.12 -m venv /opt/venv
+RUN python3 -m venv /opt/venv
 ENV PATH="/opt/venv/bin:$PATH"
 
 # Install Python packages
