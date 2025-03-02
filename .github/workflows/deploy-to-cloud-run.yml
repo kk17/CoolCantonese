@@ -1,0 +1,37 @@
+name: Deploy to Cloud Run
+
+on:
+  push:
+    branches: [ main, master ]
+    paths:
+      - 'coolcantonese/**'
+      - 'Dockerfile'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+      
+    - name: Set up Cloud SDK
+      uses: google-github-actions/setup-gcloud@v1
+      with:
+        project_id: ${{ secrets.GCP_PROJECT_ID }}
+        service_account_key: ${{ secrets.GCP_SA_KEY }}
+        export_default_credentials: true
+    
+    - name: Authorize Docker push
+      run: gcloud auth configure-docker
+    
+    - name: Create config file
+      run: |
+        echo '${{ secrets.DOT_ENV }}' > .env
+    
+    - name: Deploy to Cloud Run
+      run: bash ./scripts/deploy-to-cloud-run.sh
+      env:
+        IMAGE_VERSION: ${{ github.sha }}
+        # Add any environment variables your service needs
+        # ENV_VARS: "KEY1=VALUE1,KEY2=VALUE2"

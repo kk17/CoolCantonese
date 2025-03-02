@@ -18,3 +18,5 @@ coolcantonese/conf/config.yml
 tests/simulator.py
 .vscode/
 kubernetes
+.cursorrules
+scratchpad.md
