@@ -2,7 +2,7 @@
 
 default_config = {
     "enable_client": False,
-    "use_redis_session": False,
+    "session_impl": "diskcache",
     "redis_host": "localhost",
     "redis_port": 6379,
     "redis_db": 1,
