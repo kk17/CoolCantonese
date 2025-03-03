@@ -1,6 +1,5 @@
-FROM kk17/ekho:9.0_ubuntu_22.04
+FROM kk17/ekho:9.0-ubuntu-22.04
 
-LABEL Author="Zhike Chan <zk.chan007@gmail.com>"
 LABEL org.opencontainers.image.authors="Zhike Chan <zk.chan007@gmail.com>"
 LABEL org.opencontainers.image.description="CoolCantonese web service with ekho speech synthesis"
 LABEL org.opencontainers.image.source="https://github.com/kk17/CoolCantonese"
@@ -40,5 +39,7 @@ EXPOSE 8888
 HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 \
     CMD curl -f http://localhost:8888/health || exit 1
 
-# Run application
-CMD ["gunicorn", "-b", "0.0.0.0:8888", "coolcantonese.wechat:ekho.wsgi"]
+# Use exec form for ENTRYPOINT
+ENTRYPOINT ["gunicorn"]
+# Run application with logging enabled
+CMD ["--bind", "0.0.0.0:8888", "--log-file=-", "--access-logfile=-", "--log-level=info", "coolcantonese.wechat:application"]

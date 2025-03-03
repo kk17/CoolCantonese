@@ -1,28 +1,10 @@
-version: "3.1"
-
 services:
   web:
-    image: kk17/coolcantonese:dev
-    build: 
+    image: gcr.io/coolcantonese/coolcantonese
+    build:
       context: .
-    environment:
-      - use_redis_session=${use_redis_session}
-      - wechat_token=${wechat_token}
-      - redis_host=${redis_host}
-      - redis_port=${redis_port}
-      - redis_db=${redis_db}
-      - redis_password=${redis_password}
-      - enable_tuling_robot=${enable_tuling_robot}
-      - tuling_api_key=${tuling_api_key}
-      - use_baidu_translator=${use_baidu_translator}
-      - baidu_app_id=${baidu_app_id}
-      - baidu_app_secret=${baidu_app_secret}
-      - audio_folder=${audio_folder}
-      - audio_url_prefix=${audio_url_prefix}
-      - LOG_LEVEL=${LOG_LEVEL}
+    env_file:
+      - .env
     ports:
       - "${host}:${port}:8888"
-    depends_on:
-      - redis
-  redis:
-    image: redis
+

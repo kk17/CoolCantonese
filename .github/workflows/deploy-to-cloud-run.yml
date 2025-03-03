@@ -30,7 +30,7 @@ jobs:
         echo '${{ secrets.DOT_ENV }}' > .env
     
     - name: Deploy to Cloud Run
-      run: bash ./scripts/deploy-to-cloud-run.sh
+      run: bash ./scripts/build.sh
       env:
         IMAGE_VERSION: ${{ github.sha }}
         # Add any environment variables your service needs

@@ -48,6 +48,10 @@ if cfg.enable_tuling_robot:
 notation_marker = NotationMarker(cfg.phonetic_data_path)
 ekho = Ekho(cfg.audio_folder, cfg.audio_url_prefix)
 
+# Define the WSGI application right here at module level
+# This ensures it's available immediately when the module is imported
+application = ekho.wsgi
+
 translator = SmartTranslator(cfg)
 
 
@@ -375,6 +379,7 @@ def translate(userid: str, content: str, in_chat_mode: bool = False, user_conten
 def subscribe(message: werobot.messages.events.SubscribeEvent):
     return cfg.subscribe_msg
 
+# Now merge the applications
 ekho.wsgi.merge(robot.wsgi)
 
 if __name__ == '__main__':
